@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ApplicationSubmission.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace ApplicationSubmission.Controllers
 {
@@ -12,85 +13,160 @@ namespace ApplicationSubmission.Controllers
     [ApiController]
     public class LoanController : ControllerBase
     {
-        // GET: api/Loan
+        // GET: applicationsubmission/Loan
         [HttpGet]
-        public List<Loan> Get(string bid)
+        public JsonResult Get(string bid)
         {
-            List<Loan> lstloandetail = new List<Loan>();
-            Loan loandetail = new Loan();
-            lstloandetail = loandetail.Get_All_Loan(int.Parse(bid));
+            try
+            {
+                string msg;
+                List<Loan> lstloandetail = new List<Loan>();
+                Loan loandetail = new Loan();
+                lstloandetail = loandetail.Get_All_Loan(int.Parse(bid));
 
-            return lstloandetail;
+                this.Response.ContentType = "text/json";
+                this.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+
+                if (lstloandetail.Count <= 0)
+                {
+                    msg = "No loan application found.";
+                    return new JsonResult(msg, new JsonSerializerSettings { Formatting = Formatting.Indented });
+                }
+                else
+                {
+                    return new JsonResult(lstloandetail, new JsonSerializerSettings { Formatting = Formatting.Indented });
+                }
+            }
+            catch (Exception ex)
+            {
+                this.Response.StatusCode = 400;
+                return new JsonResult(ex.Message);
+            }
+            
         }
 
-        // GET: api/Loan/5
+        // GET: applicationsubmission/Loan/5
         [HttpGet("{id}")]
-        public Loan Get(int id)
+        public JsonResult Get(int id)
         {
-            Loan loandetail = new Loan();
-            loandetail = loandetail.Get_Loan_by_id(id);
+            try
+            {
+                string msg;
+                Loan loandetail = new Loan();
+                loandetail = loandetail.Get_Loan_by_id(id);
 
-            return loandetail;
+                this.Response.ContentType = "text/json";
+                this.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+
+                if (loandetail.LoanApplication_ID == 0)
+                {
+                    msg = "No loan application found.";
+                    return new JsonResult(msg, new JsonSerializerSettings { Formatting = Formatting.Indented });
+                }
+                else
+                {
+                    return new JsonResult(loandetail, new JsonSerializerSettings { Formatting = Formatting.Indented });
+                }
+            }
+            catch (Exception ex)
+            {
+                this.Response.StatusCode = 400;
+                return new JsonResult(ex.Message);
+            }
+            
         }
 
-        // POST: api/Loan
+        // POST: applicationsubmission/Loan
         [HttpPost]
-        public string Post([FromBody] Loan value)
+        public JsonResult Post([FromBody] Loan value)
         {
-            string msg = "";
-            Loan loandetail = new Loan();
-            bool result = loandetail.Add_LoanInfo(value);
-
-            if (result == true)
+            try
             {
-                msg = "Loan data saved successfully.";
-            }
-            else
-            {
-                msg = "Loan data not saved.";
-            }
+                string msg = "";
+                Loan loandetail = new Loan();
+                bool result = loandetail.Add_LoanInfo(value);
 
-            return msg;
+                if (result == true)
+                {
+                    msg = "Loan application saved successfully.";
+                }
+                else
+                {
+                    msg = "Loan application not saved.";
+                }
+
+                this.Response.ContentType = "text/json";
+                this.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+                return new JsonResult(msg, new JsonSerializerSettings { Formatting = Formatting.Indented });
+            }
+            catch (Exception ex)
+            {
+                this.Response.StatusCode = 400;
+                return new JsonResult(ex.Message);
+            }
+            
         }
 
-        // PUT: api/Business/5
+        // PUT: applicationsubmission/Business/5
         [HttpPut("{id}")]
-        public string Put(int id, [FromBody] Loan value)
+        public JsonResult Put(int id, [FromBody] Loan value)
         {
-            string msg = "";
-            Loan loandetail = new Loan();
-            bool result = loandetail.Update_LoanInfo(value, id);
-
-            if (result == true)
+            try
             {
-                msg = "Loan data updated successfully for Loan " + id.ToString();
-            }
-            else
-            {
-                msg = "Loan data not updated.";
-            }
+                string msg = "";
+                Loan loandetail = new Loan();
+                bool result = loandetail.Update_LoanInfo(value, id);
 
-            return msg;
+                if (result == true)
+                {
+                    msg = "Loan application updated successfully.";
+                }
+                else
+                {
+                    msg = "Loan application not updated.";
+                }
+
+                this.Response.ContentType = "text/json";
+                this.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+                return new JsonResult(msg, new JsonSerializerSettings { Formatting = Formatting.Indented });
+            }
+            catch (Exception ex)
+            {
+                this.Response.StatusCode = 400;
+                return new JsonResult(ex.Message);
+            }
+            
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: applicationsubmission/ApiWithActions/5
         [HttpDelete("{id}")]
-        public string Delete(int id)
+        public JsonResult Delete(int id)
         {
-            string msg = "";
-            Loan loandetail = new Loan();
-            bool result = loandetail.Delete_LoanInfo(id);
-
-            if (result == true)
+            try
             {
-                msg = "Loan data deleted successfully for Loan " + id.ToString();
-            }
-            else
-            {
-                msg = "Loan data not deleted.";
-            }
+                string msg = "";
+                Loan loandetail = new Loan();
+                bool result = loandetail.Delete_LoanInfo(id);
 
-            return msg;
+                if (result == true)
+                {
+                    msg = "Loan application deleted successfully.";
+                }
+                else
+                {
+                    msg = "Loan application not deleted.";
+                }
+
+                this.Response.ContentType = "text/json";
+                this.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+                return new JsonResult(msg, new JsonSerializerSettings { Formatting = Formatting.Indented });
+            }
+            catch (Exception ex)
+            {
+                this.Response.StatusCode = 400;
+                return new JsonResult(ex.Message);
+            }
+            
         }
     }
 }

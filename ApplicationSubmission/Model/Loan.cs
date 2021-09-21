@@ -103,14 +103,13 @@ namespace ApplicationSubmission.Model
             {
                 dbHelper.Connect(dbHelper.GetConnStr());
 
-                MySqlParameter[] loan_para = new MySqlParameter[7];
+                MySqlParameter[] loan_para = new MySqlParameter[6];
                 loan_para[0] = new MySqlParameter("Applicant_ID", LoanPara.Applicant_ID);
                 loan_para[1] = new MySqlParameter("Business_ID", LoanPara.Business_ID);
                 loan_para[2] = new MySqlParameter("LoanApplication_Amount", LoanPara.LoanApplication_Amount);
                 loan_para[3] = new MySqlParameter("LoanApplication_Description", LoanPara.LoanApplication_Description);
                 loan_para[4] = new MySqlParameter("LoanApplication_Status", LoanPara.LoanApplication_Status);
-                loan_para[5] = new MySqlParameter("LoanApplication_Date", LoanPara.LoanApplication_Date);
-                loan_para[6] = new MySqlParameter("LoanApplication_BankerComment", LoanPara.LoanApplication_BankerComment);
+                loan_para[5] = new MySqlParameter("LoanApplication_BankerComment", LoanPara.LoanApplication_BankerComment);
 
                 int r = dbHelper.Execute("Add_LoanInfo", DBHelper.QueryType.StotedProcedure, loan_para);
 
@@ -140,15 +139,14 @@ namespace ApplicationSubmission.Model
             {
                 dbHelper.Connect(dbHelper.GetConnStr());
 
-                MySqlParameter[] loan_para = new MySqlParameter[8];
+                MySqlParameter[] loan_para = new MySqlParameter[7];
                 loan_para[0] = new MySqlParameter("LoanApplication_ID", id);
                 loan_para[1] = new MySqlParameter("Applicant_ID", LoanPara.Applicant_ID);
                 loan_para[2] = new MySqlParameter("Business_ID", LoanPara.Business_ID);
                 loan_para[3] = new MySqlParameter("LoanApplication_Amount", LoanPara.LoanApplication_Amount);
                 loan_para[4] = new MySqlParameter("LoanApplication_Description", LoanPara.LoanApplication_Description);
                 loan_para[5] = new MySqlParameter("LoanApplication_Status", LoanPara.LoanApplication_Status);
-                loan_para[6] = new MySqlParameter("LoanApplication_Date", LoanPara.LoanApplication_Date);
-                loan_para[7] = new MySqlParameter("LoanApplication_BankerComment", LoanPara.LoanApplication_BankerComment);
+                loan_para[6] = new MySqlParameter("LoanApplication_BankerComment", LoanPara.LoanApplication_BankerComment);
 
                 int r = dbHelper.Execute("Update_LoanInfo", DBHelper.QueryType.StotedProcedure, loan_para);
 

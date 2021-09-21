@@ -25,7 +25,7 @@ namespace ApplicationSubmission.Controllers
             bucketName = "pbloandocuments";
         }
 
-        // GET: api/Document/5
+        // GET: applicationsubmission/Document/5
         [HttpGet("{loanid}")]
         public async Task<Stream> Get(int loanid, string filename)
         {
@@ -75,21 +75,21 @@ namespace ApplicationSubmission.Controllers
             return response.HttpStatusCode;
         }
 
-        // POST: api/Document
+        // POST: applicationsubmission/Document
         [HttpPost("{loanid}")]
         public async Task<System.Net.HttpStatusCode> Post(int loanid, IFormFile[] myfile)
         {
             return await PutFileOnBucket(loanid, myfile);
         }
-        
-        // PUT: api/Document/5
+
+        // PUT: applicationsubmission/Document/5
         [HttpPut("{loanid}")]
         public async Task<System.Net.HttpStatusCode> Put(int loanid, IFormFile[] myfile)
         {
             return await PutFileOnBucket(loanid, myfile);
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: applicationsubmission/ApiWithActions/5
         [HttpDelete("{loanid}")]
         public async Task<System.Net.HttpStatusCode> Delete(int loanid, string filename)
         {

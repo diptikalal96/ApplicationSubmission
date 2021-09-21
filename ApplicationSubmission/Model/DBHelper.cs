@@ -62,7 +62,7 @@ namespace ApplicationSubmission.Model
             }
         }
 
-        public MySqlTransaction ConnectTran(string ConnectionString,MySqlTransaction sqlTran)
+        public MySqlTransaction ConnectTran(string ConnectionString, MySqlTransaction sqlTran)
         {
             _connection = new MySqlConnection(ConnectionString);
             try
@@ -143,7 +143,7 @@ namespace ApplicationSubmission.Model
                         selectcommand.Parameters.AddWithValue(CommandParamtres[i].ParameterName, CommandParamtres[i].Value);
                     }
                 }
-                
+
                 //adding commnad to adapter
                 _adapter = new MySqlDataAdapter();
                 _adapter.SelectCommand = selectcommand;
@@ -210,7 +210,7 @@ namespace ApplicationSubmission.Model
             }
         }
 
-        public MySqlTransaction ExecuteTran(string Query, QueryType queryType, MySqlParameter[]CommandParamtres,MySqlTransaction sqlTran)
+        public MySqlTransaction ExecuteTran(string Query, QueryType queryType, MySqlParameter[] CommandParamtres, MySqlTransaction sqlTran)
         {
             //No of records affected by execute command -1,0, >0
             //-1 : Insert/update/delete statement not executed
@@ -362,7 +362,6 @@ namespace ApplicationSubmission.Model
             }
         }
 
-
         public static object checkNullString(object ob)
         {
             if (!string.IsNullOrEmpty((string)ob))
@@ -401,5 +400,6 @@ namespace ApplicationSubmission.Model
 
             return false;
         }
+
     }
 }

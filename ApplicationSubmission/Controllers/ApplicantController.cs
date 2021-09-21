@@ -17,83 +17,129 @@ namespace ApplicationSubmission.Controllers
     [ApiController]
     public class ApplicantController : ControllerBase
     {
-        // GET: api/Applicant/5
+        // GET: applicationsubmission/Applicant/5
         [HttpGet("{id}")]
-        public Applicant Get(int id)
+        public JsonResult Get(int id)
         {
-            Applicant appdetail = new Applicant();
-            appdetail = appdetail.Get_Applicant(id);
+            try
+            {
+                string msg;
+                Applicant appdetail = new Applicant();
+                appdetail = appdetail.Get_Applicant(id);
 
-            //string res = Newtonsoft.Json.JsonConvert.SerializeObject(appdetail);
-            //var response = new APIGatewayProxyResponse
-            //{
-            //    StatusCode = (int)HttpStatusCode.OK,
-            //    Body = res,
-            //    Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
-            //};
-            //response.Headers.Add("Access-Control-Allow-Origin", "*");
+                this.Response.ContentType = "text/json";
+                this.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
-            return appdetail;
+                if (appdetail.Applicant_ID == 0)
+                {
+                    msg = "No applicant details found.";
+                    return new JsonResult(msg, new JsonSerializerSettings { Formatting = Formatting.Indented });
+                }
+                else
+                {
+                    return new JsonResult(appdetail, new JsonSerializerSettings { Formatting = Formatting.Indented });
+                }
+            }
+            catch (Exception ex)
+            {
+                this.Response.StatusCode = 400;
+                return new JsonResult(ex.Message);
+            }
+            
         }
 
-        // POST: api/Applicant
+        // POST: applicationsubmission/Applicant
         [HttpPost]
-        public string Post([FromBody] Applicant value)
+        public JsonResult Post([FromBody] Applicant value)
         {
-            string msg = "";
-            Applicant appdetail = new Applicant();
-            bool result = appdetail.Add_ApplicantInfo(value);
-
-            if (result == true)
+            try
             {
-                msg = "Applicant data saved successfully.";
-            }
-            else
-            {
-                msg = "Applicant data not saved.";
-            }
+                string msg = "";
+                Applicant appdetail = new Applicant();
+                bool result = appdetail.Add_ApplicantInfo(value);
 
-            return msg;
+                if (result == true)
+                {
+                    msg = "Applicant details saved successfully.";
+                }
+                else
+                {
+                    msg = "Applicant details not saved.";
+                }
+
+                this.Response.ContentType = "text/json";
+                this.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+                return new JsonResult(msg, new JsonSerializerSettings { Formatting = Formatting.Indented });
+            }
+            catch (Exception ex)
+            {
+                this.Response.StatusCode = 400;
+                return new JsonResult(ex.Message);
+            }
+            
         }
 
-        // PUT: api/Applicant/5
+        // PUT: applicationsubmission/Applicant/5
         [HttpPut("{id}")]
-        public string Put(int id, [FromBody] Applicant value)
+        public JsonResult Put(int id, [FromBody] Applicant value)
         {
-            string msg = "";
-            Applicant appdetail = new Applicant();
-            bool result = appdetail.Update_ApplicantInfo(value, id);
-
-            if (result == true)
+            try
             {
-                msg = "Applicant data updated successfully for Applicant " + id.ToString();
-            }
-            else
-            {
-                msg = "Applicant data not updated.";
-            }
+                string msg = "";
+                Applicant appdetail = new Applicant();
+                bool result = appdetail.Update_ApplicantInfo(value, id);
 
-            return msg;
+                if (result == true)
+                {
+                    msg = "Applicant details updated successfully.";
+                }
+                else
+                {
+                    msg = "Applicant details not updated.";
+                }
+
+                this.Response.ContentType = "text/json";
+                this.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+                return new JsonResult(msg, new JsonSerializerSettings { Formatting = Formatting.Indented });
+
+            }
+            catch (Exception ex)
+            {
+                this.Response.StatusCode = 400;
+                return new JsonResult(ex.Message);
+            }
+            
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: applicationsubmission/ApiWithActions/5
         [HttpDelete("{id}")]
-        public string Delete(int id)
+        public JsonResult Delete(int id)
         {
-            string msg = "";
-            Applicant appdetail = new Applicant();
-            bool result = appdetail.Delete_ApplicantInfo(id);
-
-            if (result == true)
+            try
             {
-                msg = "Applicant data deleted successfully for Applicant " + id.ToString();
-            }
-            else
-            {
-                msg = "Applicant data not deleted.";
-            }
+                string msg = "";
+                Applicant appdetail = new Applicant();
+                bool result = appdetail.Delete_ApplicantInfo(id);
 
-            return msg;
+                if (result == true)
+                {
+                    msg = "Applicant details deleted successfully.";
+                }
+                else
+                {
+                    msg = "Applicant details not deleted.";
+                }
+
+                this.Response.ContentType = "text/json";
+                this.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+                return new JsonResult(msg, new JsonSerializerSettings { Formatting = Formatting.Indented });
+            }
+            catch (Exception ex)
+            {
+                this.Response.StatusCode = 400;
+                return new JsonResult(ex.Message);
+            }
+            
         }
     }
 }

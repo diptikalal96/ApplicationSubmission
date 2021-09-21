@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ApplicationSubmission.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace ApplicationSubmission.Controllers
 {
@@ -12,83 +13,160 @@ namespace ApplicationSubmission.Controllers
     [ApiController]
     public class BusinessController : ControllerBase
     {
-        // GET: api/Business
+        // GET: applicationsubmission/Business
         [HttpGet]
-        public List<Business> Get(string aid)
+        public JsonResult Get(string aid)
         {
-            List<Business> lstbusidetail = new List<Business>();
-            Business busidetail = new Business();
-            lstbusidetail = busidetail.Get_All_Business(int.Parse(aid));
+            try
+            {
+                string msg;
+                List<Business> lstbusidetail = new List<Business>();
+                Business busidetail = new Business();
+                lstbusidetail = busidetail.Get_All_Business(int.Parse(aid));
 
-            return lstbusidetail;
+                this.Response.ContentType = "text/json";
+                this.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+
+                if (lstbusidetail.Count <= 0)
+                {
+                    msg = "No business details found.";
+                    return new JsonResult(msg, new JsonSerializerSettings { Formatting = Formatting.Indented });
+                }
+                else
+                {
+                    return new JsonResult(lstbusidetail, new JsonSerializerSettings { Formatting = Formatting.Indented });
+                }
+            }
+            catch (Exception ex)
+            {
+                this.Response.StatusCode = 400;
+                return new JsonResult(ex.Message);
+            }
+            
         }
 
-        // GET: api/Business/5
+        // GET: applicationsubmission/Business/5
         [HttpGet("{id}")]
-        public Business Get(int id)
+        public JsonResult Get(int id)
         {
-            Business busidetail = new Business();
-            busidetail = busidetail.Get_Business_by_id(id);
+            try
+            {
+                string msg;
+                Business busidetail = new Business();
+                busidetail = busidetail.Get_Business_by_id(id);
 
-            return busidetail;
+                this.Response.ContentType = "text/json";
+                this.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+
+                if (busidetail.Business_ID == 0)
+                {
+                    msg = "No business details found.";
+                    return new JsonResult(msg, new JsonSerializerSettings { Formatting = Formatting.Indented });
+                }
+                else
+                {
+                    return new JsonResult(busidetail, new JsonSerializerSettings { Formatting = Formatting.Indented });
+                }
+            }
+            catch (Exception ex)
+            {
+                this.Response.StatusCode = 400;
+                return new JsonResult(ex.Message);
+            }
+            
         }
 
-        // POST: api/Business
+        // POST: applicationsubmission/Business
         [HttpPost]
-        public string Post([FromBody] Business value)
+        public JsonResult Post([FromBody] Business value)
         {
-            string msg = "";
-            Business busidetail = new Business();
-            bool result = busidetail.Add_BusinessInfo(value);
-
-            if (result == true)
+            try
             {
-                msg = "Business data saved successfully.";
-            }
-            else
-            {
-                msg = "Business data not saved.";
-            }
+                string msg = "";
+                Business busidetail = new Business();
+                bool result = busidetail.Add_BusinessInfo(value);
 
-            return msg;
+                if (result == true)
+                {
+                    msg = "Business details saved successfully.";
+                }
+                else
+                {
+                    msg = "Business details not saved.";
+                }
+
+                this.Response.ContentType = "text/json";
+                this.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+                return new JsonResult(msg, new JsonSerializerSettings { Formatting = Formatting.Indented });
+            }
+            catch (Exception ex)
+            {
+                this.Response.StatusCode = 400;
+                return new JsonResult(ex.Message);
+            }
+            
         }
 
-        // PUT: api/Business/5
+        // PUT: applicationsubmission/Business/5
         [HttpPut("{id}")]
-        public string Put(int id, [FromBody] Business value)
+        public JsonResult Put(int id, [FromBody] Business value)
         {
-            string msg = "";
-            Business busidetail = new Business();
-            bool result = busidetail.Update_BusinessInfo(value, id);
+            try
+            {
+                string msg = "";
+                Business busidetail = new Business();
+                bool result = busidetail.Update_BusinessInfo(value, id);
 
-            if (result == true)
-            {
-                msg = "Business data updated successfully for Business " + id.ToString();
+                if (result == true)
+                {
+                    msg = "Business details updated successfully.";
+                }
+                else
+                {
+                    msg = "Business details not updated.";
+                }
+
+                this.Response.ContentType = "text/json";
+                this.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+                return new JsonResult(msg, new JsonSerializerSettings { Formatting = Formatting.Indented });
             }
-            else
+            catch (Exception ex)
             {
-                msg = "Business data not updated.";
+                this.Response.StatusCode = 400;
+                return new JsonResult(ex.Message);
             }
-            return msg;
+            
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: applicationsubmission/ApiWithActions/5
         [HttpDelete("{id}")]
-        public string Delete(int id)
+        public JsonResult Delete(int id)
         {
-            string msg = "";
-            Business busidetail = new Business();
-            bool result = busidetail.Delete_ApplicantInfo(id);
+            try
+            {
+                string msg = "";
+                Business busidetail = new Business();
+                bool result = busidetail.Delete_ApplicantInfo(id);
 
-            if (result == true)
-            {
-                msg = "Business data deleted successfully for Business " + id.ToString();
+                if (result == true)
+                {
+                    msg = "Business details deleted successfully.";
+                }
+                else
+                {
+                    msg = "Business details not deleted.";
+                }
+
+                this.Response.ContentType = "text/json";
+                this.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+                return new JsonResult(msg, new JsonSerializerSettings { Formatting = Formatting.Indented });
             }
-            else
+            catch (Exception ex)
             {
-                msg = "Business data not deleted.";
+                this.Response.StatusCode = 400;
+                return new JsonResult(ex.Message);
             }
-            return msg;
+            
         }
     }
 }

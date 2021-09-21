@@ -17,8 +17,7 @@ namespace ApplicationSubmission.Model
         public string Applicant_dob { get; set; }
         public string Applicant_email { get; set; }
         public string Applicant_mobno { get; set; }
-        //public string Applicant_username { get; set; }
-        //public string Applicant_password { get; set; }
+
 
         public Applicant Get_Applicant(int Applicant_ID)
         {
@@ -41,7 +40,7 @@ namespace ApplicationSubmission.Model
                     appobj.Applicant_lname = AppReader["Applicant_lname"].ToString();
                     appobj.Applicant_address = AppReader["Applicant_address"].ToString();
                     appobj.Applicant_pincode = AppReader["Applicant_pincode"].ToString();
-                    appobj.Applicant_dob = AppReader["Applicant_dob"].ToString();
+                    appobj.Applicant_dob = Convert.ToDateTime(AppReader["Applicant_dob"].ToString()).ToShortDateString();
                     appobj.Applicant_email = AppReader["Applicant_email"].ToString();
                     appobj.Applicant_mobno = AppReader["Applicant_mobno"].ToString();
                     //appobj.Applicant_username = AppReader["Customer_username"].ToString();
