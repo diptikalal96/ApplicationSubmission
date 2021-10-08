@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -95,7 +96,41 @@ namespace ApplicationSubmission.Model
             }
         }
 
-        public bool Add_LoanInfo(Loan LoanPara)
+        public bool CheckIsClosed(int LoanApplication_ID)
+        {
+            DBHelper dbHelper = new DBHelper();
+            bool Result = false;
+            try
+            {
+                dbHelper.Connect(dbHelper.GetConnStr());
+
+                MySqlParameter[] loan_para = new MySqlParameter[1];
+                loan_para[0] = new MySqlParameter("Loan_ID", LoanApplication_ID);
+
+                DataSet dsloan = dbHelper.ExecuteDS("Get_Loan_Info_By_Id", DBHelper.QueryType.StotedProcedure, loan_para);
+
+                if (dsloan.Tables[0].Rows.Count > 0)
+                {
+                    if (int.Parse(dsloan.Tables[0].Rows[0]["LoanStatus"].ToString()) == 8)// Loan Status 8 i.e. Closed by External Service
+                    {
+                        Result = true;
+                    }
+                }
+
+                return Result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                dbHelper.DisConnect();
+                dbHelper = null;
+            }
+        }
+
+        public int Add_LoanInfo(Loan LoanPara)
         {
             DBHelper dbHelper = new DBHelper();
             bool Result = false;
@@ -111,14 +146,16 @@ namespace ApplicationSubmission.Model
                 loan_para[4] = new MySqlParameter("LoanApplication_Status", LoanPara.LoanApplication_Status);
                 loan_para[5] = new MySqlParameter("LoanApplication_BankerComment", LoanPara.LoanApplication_BankerComment);
 
-                int r = dbHelper.Execute("Add_LoanInfo", DBHelper.QueryType.StotedProcedure, loan_para);
+                int r = Convert.ToInt32(dbHelper.ExecuteScalar("Add_LoanInfo", DBHelper.QueryType.StotedProcedure, loan_para));
 
-                if (r == 1)
+                if (r > 0)
                 {
-                    Result = true;
+                    return r;
                 }
-
-                return Result;
+                else
+                {
+                    return 0;
+                }
             }
             catch (Exception ex)
             {
@@ -187,6 +224,29 @@ namespace ApplicationSubmission.Model
                 }
 
                 return Result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                dbHelper.DisConnect();
+                dbHelper = null;
+            }
+        }
+
+        public void LogMessage(string msg)
+        {
+            DBHelper dbHelper = new DBHelper();
+            try
+            {
+                dbHelper.Connect(dbHelper.GetConnStr());
+
+                MySqlParameter[] app_para = new MySqlParameter[1];
+                app_para[0] = new MySqlParameter("LogMsg", msg);
+
+                int r = dbHelper.Execute("Add_LogMsg", DBHelper.QueryType.StotedProcedure, app_para);
             }
             catch (Exception ex)
             {

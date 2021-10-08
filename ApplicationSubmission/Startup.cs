@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ApplicationSubmission.Model;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +19,7 @@ namespace ApplicationSubmission
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            DBHelper.conStr = Configuration.GetSection("conStr").Value.ToString();
         }
 
         public static IConfiguration Configuration { get; private set; }
@@ -29,12 +31,19 @@ namespace ApplicationSubmission
 
             // Add S3 to the ASP.NET Core dependency injection framework.
             services.AddAWSService<Amazon.S3.IAmazonS3>();
-            services.AddAuthentication(option => {
-                
+            services.AddAuthentication(option =>
+            {
+
             });
 
-            
-            
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                    });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
@@ -52,6 +61,7 @@ namespace ApplicationSubmission
             app.UseHttpsRedirection();
             app.UseMvc();
             app.UseAuthentication();
+            app.UseCors();
         }
     }
 }

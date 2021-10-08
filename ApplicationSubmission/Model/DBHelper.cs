@@ -15,7 +15,7 @@ namespace ApplicationSubmission.Model
         MySqlDataReader _reader = null;
 
         string _sLogFilePath = string.Empty;
-
+        public static string conStr;
         /// <summary>
         /// Constructor of the class 
         /// </summary>

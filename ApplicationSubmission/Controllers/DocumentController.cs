@@ -9,6 +9,7 @@ using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace ApplicationSubmission.Controllers
 {
@@ -27,17 +28,25 @@ namespace ApplicationSubmission.Controllers
 
         // GET: applicationsubmission/Document/5
         [HttpGet("{loanid}")]
-        public async Task<Stream> Get(int loanid, string filename)
+        public async Task Get(int loanid, string filename)
         {
-            GetObjectResponse response = new GetObjectResponse();
-            var request = new GetObjectRequest
+            try
             {
-                BucketName = bucketName,
-                Key = loanid.ToString() + "/" + filename
-            };
-            response = await client.GetObjectAsync(request);
+                var getResponse = await client.GetObjectAsync(new GetObjectRequest
+                {
+                    BucketName = bucketName,
+                    Key = loanid.ToString() + "/" + filename
+                });
 
-            return response.ResponseStream;
+                this.Response.ContentType = getResponse.Headers.ContentType;
+                getResponse.ResponseStream.CopyTo(this.Response.Body);
+            }
+            catch (AmazonS3Exception e)
+            {
+                this.Response.StatusCode = (int)e.StatusCode;
+                var writer = new StreamWriter(this.Response.Body);
+                writer.Write(e.Message);
+            }
         }
 
         public async Task<string> ReadFormFileAsync(IFormFile file)

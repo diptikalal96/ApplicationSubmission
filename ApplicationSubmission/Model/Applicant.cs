@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,7 +20,34 @@ namespace ApplicationSubmission.Model
         public string Applicant_mobno { get; set; }
 
 
-        public Applicant Get_Applicant(int Applicant_ID)
+        public Applicant Get_ApplicantDetails(int id, string emailid)
+        {
+            try
+            {
+                Applicant appobj = new Applicant();
+
+                if (id > 0)
+                {
+                    appobj = Get_ApplicantByID(id);
+                }
+                else if (emailid != null)
+                {
+                    appobj = Get_ApplicantByEmailID(emailid);
+                }
+
+                return appobj;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+
+            }
+        }
+
+        public Applicant Get_ApplicantByID(int Applicant_ID)
         {
             DBHelper dbHelper = new DBHelper();
             try
@@ -60,7 +88,46 @@ namespace ApplicationSubmission.Model
             }
         }
 
-        public bool Add_ApplicantInfo(Applicant AppPara)
+        public Applicant Get_ApplicantByEmailID(string emailid)
+        {
+            DBHelper dbHelper = new DBHelper();
+            try
+            {
+                Applicant appobj = new Applicant();
+
+                dbHelper.Connect(dbHelper.GetConnStr());
+
+                MySqlParameter[] app_para = new MySqlParameter[1];
+                app_para[0] = new MySqlParameter("Applicant_email", emailid);
+                MySqlDataReader AppReader = dbHelper.ExecuteReader("Get_Applicant_Info_By_EmailID", DBHelper.QueryType.StotedProcedure, app_para);
+
+                while (AppReader.Read())
+                {
+                    appobj.Applicant_ID = int.Parse(AppReader["Applicant_ID"].ToString());
+                    appobj.Applicant_fname = AppReader["Applicant_fname"].ToString();
+                    appobj.Applicant_mname = AppReader["Applicant_mname"].ToString();
+                    appobj.Applicant_lname = AppReader["Applicant_lname"].ToString();
+                    appobj.Applicant_address = AppReader["Applicant_address"].ToString();
+                    appobj.Applicant_pincode = AppReader["Applicant_pincode"].ToString();
+                    appobj.Applicant_dob = Convert.ToDateTime(AppReader["Applicant_dob"].ToString()).ToShortDateString();
+                    appobj.Applicant_email = AppReader["Applicant_email"].ToString();
+                    appobj.Applicant_mobno = AppReader["Applicant_mobno"].ToString();
+                }
+
+                return appobj;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                dbHelper.DisConnect();
+                dbHelper = null;
+            }
+        }
+
+        public int Add_ApplicantInfo(Applicant AppPara)
         {
             DBHelper dbHelper = new DBHelper();
             bool Result = false;
@@ -78,14 +145,18 @@ namespace ApplicationSubmission.Model
                 app_para[6] = new MySqlParameter("Applicant_email", AppPara.Applicant_email);
                 app_para[7] = new MySqlParameter("Applicant_mobno", AppPara.Applicant_mobno);
 
-                int r = dbHelper.Execute("Add_ApplicantInfo", DBHelper.QueryType.StotedProcedure, app_para);
 
-                if (r == 1)
+                int r = Convert.ToInt32(dbHelper.ExecuteScalar("Add_ApplicantInfo", DBHelper.QueryType.StotedProcedure, app_para));
+
+                if (r > 0)
                 {
-                    Result = true;
+                    return r;
+                }
+                else
+                {
+                    return 0;
                 }
 
-                return Result;
             }
             catch (Exception ex)
             {
@@ -156,6 +227,29 @@ namespace ApplicationSubmission.Model
                 }
 
                 return Result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                dbHelper.DisConnect();
+                dbHelper = null;
+            }
+        }
+
+        public void LogMessage(string msg)
+        {
+            DBHelper dbHelper = new DBHelper();
+            try
+            {
+                dbHelper.Connect(dbHelper.GetConnStr());
+
+                MySqlParameter[] app_para = new MySqlParameter[1];
+                app_para[0] = new MySqlParameter("LogMsg", msg);
+
+                int r = dbHelper.Execute("Add_LogMsg", DBHelper.QueryType.StotedProcedure, app_para);
             }
             catch (Exception ex)
             {

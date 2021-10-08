@@ -89,7 +89,7 @@ namespace ApplicationSubmission.Model
             }
         }
 
-        public bool Add_BusinessInfo(Business BusiPara)
+        public int Add_BusinessInfo(Business BusiPara)
         {
             DBHelper dbHelper = new DBHelper();
             bool Result = false;
@@ -104,14 +104,16 @@ namespace ApplicationSubmission.Model
                 busi_para[3] = new MySqlParameter("Business_Address", BusiPara.Business_Address);
                 busi_para[4] = new MySqlParameter("Business_Description", BusiPara.Business_Description);
 
-                int r = dbHelper.Execute("Add_BusinessInfo", DBHelper.QueryType.StotedProcedure, busi_para);
+                int r = Convert.ToInt32(dbHelper.ExecuteScalar("Add_BusinessInfo", DBHelper.QueryType.StotedProcedure, busi_para));
 
-                if (r == 1)
+                if (r > 0)
                 {
-                    Result = true;
+                    return r;
                 }
-
-                return Result;
+                else
+                {
+                    return 0;
+                }
             }
             catch (Exception ex)
             {
@@ -179,6 +181,29 @@ namespace ApplicationSubmission.Model
                 }
 
                 return Result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                dbHelper.DisConnect();
+                dbHelper = null;
+            }
+        }
+
+        public void LogMessage(string msg)
+        {
+            DBHelper dbHelper = new DBHelper();
+            try
+            {
+                dbHelper.Connect(dbHelper.GetConnStr());
+
+                MySqlParameter[] app_para = new MySqlParameter[1];
+                app_para[0] = new MySqlParameter("LogMsg", msg);
+
+                int r = dbHelper.Execute("Add_LogMsg", DBHelper.QueryType.StotedProcedure, app_para);
             }
             catch (Exception ex)
             {
