@@ -56,3 +56,15 @@ steps:
     functionName: 'ApplicationSubmission'
     codeLocation: 'localfile'
     localZipFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+
+- task: LambdaDeployFunction@1
+  inputs:
+    awsCredentials: 'awsconnection'
+    regionName: 'ap-south-1'
+    deploymentMode: 'codeandconfiguration'
+    functionName: 'ApplicationSubmission'
+    functionHandler: 'ApplicationSubmission::ApplicationSubmission.LambdaEntryPoint::FunctionHandlerAsync'
+    runtime: 'dotnetcore2.1'
+    codeLocation: 'localfile'
+    localZipFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    roleARN: 'arn:aws:iam::618393550001:role/abcdkdded-LambdaExecutionRole-1EQHS5DI463T0'
